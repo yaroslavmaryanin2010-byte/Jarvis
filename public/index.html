@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#03081a">
+<title>Джарвис</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/favicon.png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;500&family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#03081a;--panel:#0a1229;--line:#18244a;--text:#e6ebff;--dim:#8590b8;--blue:#3d7bff;--violet:#7b61ff;--ok:#3ecf8e;--warn:#ffb454;--bad:#ff6b6b;
+--ring:linear-gradient(135deg,var(--blue),var(--violet));font-family:Onest,system-ui,sans-serif}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;background:var(--bg);color:var(--text)}
+body{display:flex;flex-direction:column;padding-top:env(safe-area-inset-top);font-size:16px;line-height:1.45}
+header{padding:14px 18px 10px;display:flex;align-items:center;gap:10px}
+header h1{font:300 1.15rem "Exo 2",sans-serif;letter-spacing:.32em;text-transform:uppercase}
+header i{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 8px var(--ok)}
+main{flex:1;min-height:0;position:relative}
+section{position:absolute;inset:0;display:flex;flex-direction:column;overflow-y:auto;padding:6px 16px 16px}
+section[hidden]{display:none}
+h2{font:500 1.05rem "Exo 2",sans-serif;margin:14px 0 8px}
+#log{flex:1;display:flex;flex-direction:column;gap:8px;overflow-y:auto;padding-bottom:8px}
+.b{max-width:86%;padding:9px 13px;white-space:pre-wrap;word-wrap:break-word}
+.b.me{align-self:flex-end;background:#112250;border-radius:18px 18px 4px 18px}
+.b.ai{align-self:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:18px 18px 18px 4px}
+.b.wait{color:var(--dim)}
+.empty{color:var(--dim);margin:auto;text-align:center;max-width:26ch}
+#composer{display:flex;gap:8px;align-items:center;padding-top:8px}
+#composer input{flex:1;min-width:0;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:24px;padding:12px 16px;font:inherit}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--blue);outline-offset:1px}
+.orb{flex:none;width:52px;height:52px;border-radius:50%;border:0;cursor:pointer;display:grid;place-items:center;color:var(--text);
+background:radial-gradient(circle,var(--bg) 0 60%,transparent 62%),conic-gradient(from 200deg,#3d7bff,#7b61ff,#3d7bff);box-shadow:0 0 16px #3d7bff55}
+.orb.on{animation:pulse 1.1s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 30px #7b61ffcc,0 0 6px #3d7bff}}
+.send{flex:none;width:44px;height:44px;border-radius:50%;border:0;background:var(--ring);color:#fff;font-size:1.2rem;cursor:pointer}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+.card.ask{border-left:3px solid var(--violet)}
+.card p{color:var(--dim);margin:4px 0 10px;white-space:pre-wrap}
+.row{display:flex;gap:8px}
+button.pri{background:var(--ring);color:#fff;border:0;border-radius:10px;padding:9px 16px;font:600 .95rem Onest,sans-serif;cursor:pointer}
+button.ghost{background:none;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:9px 16px;font:500 .95rem Onest,sans-serif;cursor:pointer}
+.li{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.li time{color:var(--dim);font-variant-numeric:tabular-nums;flex:none}
+.li small{display:block;color:var(--dim)}
+.st-done{color:var(--ok)}.st-failed{color:var(--bad)}.st-rejected{color:var(--dim)}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.tile b{font:300 1.9rem "Exo 2",sans-serif;display:block}.tile span{color:var(--dim);font-size:.9rem}
+.bars{display:flex;align-items:flex-end;gap:6px;height:110px;margin:6px 0}
+.bars div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;font-size:.75rem;color:var(--dim)}
+.bars i{display:block;width:100%;background:var(--ring);border-radius:5px 5px 0 0;min-height:2px}
+label{display:block;margin:12px 0 4px;color:var(--dim);font-size:.9rem}
+select,textarea,.f{width:100%;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:10px 12px;font:inherit}
+textarea{min-height:190px;font-family:ui-monospace,Menlo,monospace;font-size:.85rem}
+nav{display:flex;border-top:1px solid var(--line);background:var(--bg);padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;background:none;border:0;color:var(--dim);padding:13px 4px;font:500 .9rem Onest,sans-serif;cursor:pointer;position:relative}
+nav button[aria-current=true]{color:var(--text);box-shadow:inset 0 2px 0 var(--blue)}
+nav em{position:absolute;top:6px;margin-left:4px;font-style:normal;background:var(--violet);color:#fff;border-radius:9px;padding:0 6px;font-size:.75rem}
+#login{position:fixed;inset:0;background:var(--bg);display:grid;place-items:center;padding:24px;z-index:9}
+#login[hidden]{display:none}
+#login form{width:100%;max-width:340px;text-align:center}
+#login img{width:120px;height:120px;border-radius:26px;margin-bottom:16px}
+.msg{color:var(--dim);font-size:.9rem;margin-top:8px}
+@media (prefers-reduced-motion:reduce){.orb.on{animation:none}}
+</style>
+</head>
+<body>
+<header><h1>Jarvis</h1><i id="dot" title="Онлайн"></i></header>
+<main>
+  <section id="v-chat">
+    <div id="log"></div>
+    <form id="composer">
+      <input id="txt" placeholder="Напишите или скажите Джарвису" autocomplete="off" aria-label="Сообщение">
+      <button type="button" class="orb" id="mic" aria-label="Говорить"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+      <button class="send" aria-label="Отправить">↑</button>
+    </form>
+  </section>
+  <section id="v-today" hidden></section>
+  <section id="v-stats" hidden></section>
+  <section id="v-set" hidden></section>
+</main>
+<nav>
+  <button data-t="chat" aria-current="true">Чат</button>
+  <button data-t="today">Сегодня<em id="badge" hidden></em></button>
+  <button data-t="stats">Аналитика</button>
+  <button data-t="set">Настройки</button>
+</nav>
+<div id="login" hidden>
+  <form id="lf"><img src="/icons/icon-192.png" alt="">
+    <input class="f" id="tk" type="password" placeholder="Ключ доступа" autocomplete="current-password">
+    <button class="pri" style="margin-top:12px;width:100%">Войти</button><p class="msg" id="lm"></p></form>
+</div>
+<script>
+const $=s=>document.querySelector(s), esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const hm=ts=>new Date(ts*1000).toLocaleTimeString("ru-RU",{hour:"2-digit",minute:"2-digit"});
+let token=localStorage.getItem("jt")||"", speak=localStorage.getItem("speak")==="1";
+
+async function api(path,opt={}){
+  const r=await fetch(path,{...opt,headers:{authorization:"Bearer "+token,...(opt.headers||{})}});
+  if(r.status===401){token="";localStorage.removeItem("jt");$("#login").hidden=false;throw new Error("auth")}
+  return r.json();
+}
+$("#lf").onsubmit=async e=>{e.preventDefault();token=$("#tk").value.trim();
+  try{await api("/api/today");localStorage.setItem("jt",token);$("#login").hidden=true;boot()}catch{$("#lm").textContent="Ключ не подошёл. Проверьте его и повторите."}};
+
+/* вкладки */
+const views={chat:loadChat,today:loadToday,stats:loadStats,set:loadSet};
+function show(t){document.querySelectorAll("nav button").forEach(b=>b.setAttribute("aria-current",b.dataset.t===t));
+  for(const k in views)$("#v-"+k).hidden=k!==t;views[t]()}
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>show(b.dataset.t));
+
+/* чат */
+function bubble(role,text,cls=""){const d=document.createElement("div");d.className="b "+role+" "+cls;d.textContent=text;$("#log").append(d);d.scrollIntoView();return d}
+async function loadChat(){const m=await api("/api/messages");$("#log").innerHTML="";
+  if(!m.length)$("#log").innerHTML='<p class="empty">Скажите, например: «Сколько будет стоить печать 85 г PETG на 3 часа?»</p>';
+  m.forEach(x=>bubble(x.role==="user"?"me":"ai",x.content))}
+async function send(text){if(!text.trim())return;$("#log .empty")?.remove();bubble("me",text);$("#txt").value="";
+  const w=bubble("ai","Думаю…","wait");
+  try{const r=await api("/api/chat",{method:"POST",body:JSON.stringify({text})});w.remove();bubble("ai",r.reply||"Готово");
+    if(speak&&r.reply){speechSynthesis.speak(Object.assign(new SpeechSynthesisUtterance(r.reply),{lang:"ru-RU"}))}refreshBadge()}
+  catch(e){w.textContent="Не удалось отправить. Проверьте соединение."}}
+$("#composer").onsubmit=e=>{e.preventDefault();send($("#txt").value)};
+
+/* голос: распознавание в браузере, а если его нет — запись и Whisper на сервере */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec,mr,chunks=[];
+$("#mic").onclick=async()=>{const mic=$("#mic");
+  if(mic.classList.contains("on")){rec?.stop();mr?.stop();return}
+  if(SR){rec=new SR();rec.lang="ru-RU";rec.onresult=e=>send(e.results[0][0].transcript);rec.onend=()=>mic.classList.remove("on");rec.start();mic.classList.add("on");return}
+  try{const s=await navigator.mediaDevices.getUserMedia({audio:true});mr=new MediaRecorder(s);chunks=[];
+    mr.ondataavailable=e=>chunks.push(e.data);
+    mr.onstop=async()=>{s.getTracks().forEach(t=>t.stop());mic.classList.remove("on");
+      const r=await api("/api/stt",{method:"POST",body:new Blob(chunks)});send(r.text||"")};
+    mr.start();mic.classList.add("on")}catch{bubble("ai","Нет доступа к микрофону. Разрешите его в настройках браузера.")}};
+
+/* сегодня */
+async function refreshBadge(){try{const d=await api("/api/today");const b=$("#badge");b.hidden=!d.pending.length;b.textContent=d.pending.length;return d}catch{}}
+async function loadToday(){const d=await refreshBadge();if(!d)return;let h="";
+  if(d.pending.length){h+="<h2>Нужно ваше решение</h2>"+d.pending.map(p=>`<div class="card ask"><b>${esc(p.title)}</b><p>${esc(p.detail)}</p>
+    <div class="row"><button class="pri" data-a="1" data-id="${p.id}">Разрешить</button><button class="ghost" data-a="0" data-id="${p.id}">Отклонить</button></div></div>`).join("")}
+  const lab={done:"выполнено",failed:"ошибка",rejected:"отклонено"};
+  h+="<h2>Сделано сегодня</h2>"+(d.done.length?d.done.map(x=>`<div class="li"><time>${hm(x.created_at)}</time><div>${esc(x.title)}<small class="st-${x.status}">${lab[x.status]}${x.detail?" · "+esc(String(x.detail).slice(0,120)):""}</small></div></div>`).join(""):'<p class="empty" style="margin:20px auto">Пока ничего. Задачи появятся здесь по мере выполнения.</p>');
+  $("#v-today").innerHTML=h;
+  $("#v-today").querySelectorAll("[data-id]").forEach(b=>b.onclick=async()=>{b.disabled=true;await api("/api/approve",{method:"POST",body:JSON.stringify({id:+b.dataset.id,approve:b.dataset.a==="1"})});loadToday()})}
+
+/* аналитика */
+async function loadStats(){const a=await api("/api/analytics?days=7");const n=k=>a.status.find(s=>s.status===k)?.n||0;
+  const inc=a.perDay.reduce((s,d)=>s+(d.incoming||0),0),max=Math.max(1,...a.perDay.map(d=>d.incoming||0));
+  const mins=a.approvalAvgSec?Math.max(1,Math.round(a.approvalAvgSec/60))+" мин":"—";
+  $("#v-stats").innerHTML=`<h2>За 7 дней</h2><div class="tiles">
+  <div class="tile"><b>${inc}</b><span>сообщений от клиентов</span></div><div class="tile"><b>${a.quotes}</b><span>расчётов цены</span></div>
+  <div class="tile"><b>${n("done")}</b><span>задач выполнено</span></div><div class="tile"><b>${mins}</b><span>до утверждения ответа</span></div></div>
+  <h2>Входящие по дням</h2><div class="bars">${a.perDay.map(d=>`<div>${d.incoming||0}<i style="height:${(d.incoming||0)/max*80}%"></i>${d.day.slice(8)}</div>`).join("")||'<p class="empty">Данных пока нет</p>'}</div>
+  <h2>Каналы</h2>${a.channels.map(c=>`<div class="li"><div>${c.channel==="telegram"?"Telegram":"WhatsApp"}</div><div style="margin-left:auto">${c.n}</div></div>`).join("")||'<p class="msg">Пока нет входящих</p>'}`}
+
+/* настройки */
+async function loadSet(){const s=await api("/api/settings");const P=["anthropic","openai","google"],N={anthropic:"Anthropic",openai:"OpenAI",google:"Google"};
+  $("#v-set").innerHTML=`<h2>Модель</h2><label for="pv">Провайдер</label><select id="pv">${P.map(p=>`<option value="${p}" ${s.model.provider===p?"selected":""}>${N[p]}${s.keys[p]?"":" (нет ключа)"}</option>`).join("")}</select>
+  <label for="md">Название модели</label><input class="f" id="md" value="${esc(s.model.model)}">
+  <h2>Тарифы</h2><label for="rt">Цены пластика, электричество, наценка (JSON)</label>
+  <textarea id="rt" spellcheck="false">${esc(JSON.stringify(s.rates||{filament_per_kg:{PLA:0,PETG:0},kwh_day:0,kwh_night:0,night_share:0.3,printer_watts:0,wear_per_hour:0,margin:2,min_price:0},null,2))}</textarea>
+  <div class="row" style="margin-top:12px"><button class="pri" id="sv">Сохранить</button></div><p class="msg" id="sm"></p>
+  <h2>Приложение</h2><label><input type="checkbox" id="sp" ${speak?"checked":""}> Озвучивать ответы</label>
+  <p class="msg">Календарь: ${s.calendar?"подключён":"не подключён"}</p>
+  <div class="row" style="margin-top:12px"><button class="ghost" id="lo">Выйти</button></div>`;
+  $("#pv").onchange=()=>$("#md").value=s.defaults[$("#pv").value];
+  $("#sp").onchange=e=>{speak=e.target.checked;localStorage.setItem("speak",speak?"1":"0")};
+  $("#lo").onclick=()=>{localStorage.removeItem("jt");location.reload()};
+  $("#sv").onclick=async()=>{try{const rates=JSON.parse($("#rt").value);
+    await api("/api/settings",{method:"PUT",body:JSON.stringify({model:{provider:$("#pv").value,model:$("#md").value.trim()},rates})});$("#sm").textContent="Сохранено"}
+    catch{$("#sm").textContent="Тарифы заданы с ошибкой в формате JSON. Проверьте запятые и кавычки."}}}
+
+function boot(){show("chat");setInterval(()=>{if(!document.hidden)refreshBadge()},15000)}
+if("serviceWorker"in navigator)navigator.serviceWorker.register("/sw.js");
+token?(api("/api/today").then(boot).catch(()=>{})):($("#login").hidden=false);
+</script>
+</body>
+</html>

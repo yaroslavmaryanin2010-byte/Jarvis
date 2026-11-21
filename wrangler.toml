@@ -1,0 +1,25 @@
+name = "jarvis"
+main = "src/index.ts"
+compatibility_date = "2025-09-01"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+run_worker_first = ["/api/*", "/webhook/*"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "jarvis"
+database_id = "ЗАМЕНИТЕ_ПОСЛЕ_wrangler_d1_create"
+
+[ai]
+binding = "AI"
+
+[triggers]
+crons = ["* * * * *"]   # напоминания и вечерняя сводка
+
+[vars]
+TZ_OFFSET_HOURS = "4"   # Самара, UTC+4
+DIGEST_HOUR = "20"      # во сколько присылать итоги дня
+# AI_GATEWAY_URL = "https://gateway.ai.cloudflare.com/v1/<account_id>/<gateway>"
