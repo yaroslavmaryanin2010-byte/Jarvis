@@ -11,7 +11,7 @@ run_worker_first = ["/api/*", "/webhook/*"]
 [[d1_databases]]
 binding = "DB"
 database_name = "jarvis"
-database_id = "ЗАМЕНИТЕ_ПОСЛЕ_wrangler_d1_create"
+database_id = "aabd35ca-ca2e-40c4-b4cf-a8706dc4914a"
 
 [ai]
 binding = "AI"
